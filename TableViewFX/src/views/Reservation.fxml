@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FXMLReservationController"
+      spacing="10">
+    <TableView fx:id="reservationTable" prefWidth="600" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="userIdColumn" text="User ID" prefWidth="100"/>
+            <TableColumn fx:id="logementIdColumn" text="Logement ID" prefWidth="100"/>
+            <TableColumn fx:id="dateDebutColumn" text="Date Début" prefWidth="100"/>
+            <TableColumn fx:id="dateFinColumn" text="Date Fin" prefWidth="100"/>
+            <TableColumn fx:id="prixTotalColumn" text="Prix Total" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <TextField fx:id="userIdField" promptText="User ID"/>
+        <TextField fx:id="logementIdField" promptText="Logement ID"/>
+        <DatePicker fx:id="dateDebutField"/>
+        <DatePicker fx:id="dateFinField"/>
+        <TextField fx:id="prixTotalField" promptText="Prix Total"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button fx:id="addReservationButton" text="Ajouter" onAction="#addReservation"/>
+        <Button fx:id="updateReservationButton" text="Modifier" onAction="#updateReservation"/>
+        <Button fx:id="deleteReservationButton" text="Supprimer" onAction="#deleteReservation"/>
+    </HBox>
+</VBox>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FXMLLogementController"
+      spacing="10">
+    <TableView fx:id="logementTable" prefWidth="600" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="150"/>
+            <TableColumn fx:id="chambresColumn" text="Chambres" prefWidth="100"/>
+            <TableColumn fx:id="sallesDeBainColumn" text="Salles de Bain" prefWidth="100"/>
+            <TableColumn fx:id="prixParNuitColumn" text="Prix/Nuit" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <TextField fx:id="nomField" promptText="Nom"/>
+        <TextField fx:id="chambresField" promptText="Chambres"/>
+        <TextField fx:id="sallesDeBainField" promptText="Salles de Bain"/>
+        <TextField fx:id="prixParNuitField" promptText="Prix/Nuit"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button fx:id="addLogementButton" text="Ajouter" onAction="#addLogement"/>
+        <Button fx:id="updateLogementButton" text="Modifier" onAction="#updateLogement"/>
+        <Button fx:id="deleteLogementButton" text="Supprimer" onAction="#deleteLogement"/>
+    </HBox>
+</VBox>

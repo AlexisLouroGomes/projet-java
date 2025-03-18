@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.FXMLUserController"
+      spacing="10">
+    <TableView fx:id="userTable" prefWidth="600" prefHeight="250">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="usernameColumn" text="Nom d'utilisateur" prefWidth="150"/>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+            <TableColumn fx:id="createdAtColumn" text="Date de Création" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10">
+        <TextField fx:id="usernameField" promptText="Nom d'utilisateur" />
+        <TextField fx:id="emailField" promptText="Email" />
+    </HBox>
+
+    <HBox spacing="10">
+        <Button fx:id="addUserButton" text="Ajouter" onAction="#addUser"/>
+        <Button fx:id="updateUserButton" text="Modifier" onAction="#updateUser"/>
+        <Button fx:id="deleteUserButton" text="Supprimer" onAction="#deleteUser"/>
+    </HBox>
+</VBox>
