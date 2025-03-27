@@ -2,25 +2,40 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.FXMLUserController"
       spacing="10">
+    
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10" />
+    </padding>
+
+    <!-- Tableau des utilisateurs -->
     <TableView fx:id="userTable" prefWidth="600" prefHeight="250">
         <columns>
             <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
             <TableColumn fx:id="usernameColumn" text="Nom d'utilisateur" prefWidth="150"/>
             <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
             <TableColumn fx:id="createdAtColumn" text="Date de Création" prefWidth="150"/>
+            <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="80"/>
         </columns>
     </TableView>
 
+    <!-- Champs de saisie -->
     <HBox spacing="10">
         <TextField fx:id="usernameField" promptText="Nom d'utilisateur" />
         <TextField fx:id="emailField" promptText="Email" />
     </HBox>
 
+    <HBox spacing="10">
+        <PasswordField fx:id="passwordField" promptText="Mot de passe" />
+        <ComboBox fx:id="roleComboBox" promptText="Rôle" prefWidth="150"/>
+    </HBox>
+
+    <!-- Boutons -->
     <HBox spacing="10">
         <Button fx:id="addUserButton" text="Ajouter" onAction="#addUser"/>
         <Button fx:id="updateUserButton" text="Modifier" onAction="#updateUser"/>

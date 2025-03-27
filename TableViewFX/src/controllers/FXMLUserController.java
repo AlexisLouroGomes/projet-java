@@ -19,6 +19,9 @@ public class FXMLUserController {
 
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
+    @FXML private PasswordField passwordField;
+    @FXML private ComboBox<String> roleComboBox;
+
     @FXML private Button addUserButton;
     @FXML private Button updateUserButton;
     @FXML private Button deleteUserButton;
@@ -27,13 +30,18 @@ public class FXMLUserController {
 
     @FXML
     public void initialize() {
+        roleComboBox.setItems(FXCollections.observableArrayList("user", "admin"));
+        roleComboBox.setValue("user");
+
         loadUsers();
-        
-        // Ajouter événement de sélection
+
         userTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 usernameField.setText(newSelection.getUsername());
                 emailField.setText(newSelection.getEmail());
+                roleComboBox.setValue(newSelection.getRole());
+                // Le mot de passe ne peut pas être récupéré de manière sécurisée ici
+                passwordField.setText("");
             }
         });
     }
@@ -51,7 +59,9 @@ public class FXMLUserController {
                         rs.getInt("id"),
                         rs.getString("username"),
                         rs.getString("email"),
-                        rs.getString("created_at")
+                        rs.getString("password"),
+                        rs.getString("created_at"),
+                        rs.getString("role")
                     ));
                 }
 
@@ -72,8 +82,10 @@ public class FXMLUserController {
     private void addUser() {
         String username = usernameField.getText();
         String email = emailField.getText();
+        String password = passwordField.getText();
+        String role = roleComboBox.getValue();
 
-        if (username.isEmpty() || email.isEmpty()) {
+        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs !");
             return;
         }
@@ -81,10 +93,12 @@ public class FXMLUserController {
         Connection conn = DbConnection.getConnection();
         if (conn != null) {
             try {
-                String query = "INSERT INTO users (username, email, password) VALUES (?, ?, 'defaultpassword')";
+                String query = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
                 PreparedStatement stmt = conn.prepareStatement(query);
                 stmt.setString(1, username);
                 stmt.setString(2, email);
+                stmt.setString(3, password);
+                stmt.setString(4, role);
                 stmt.executeUpdate();
 
                 showAlert("Succès", "Utilisateur ajouté !");
@@ -104,14 +118,38 @@ public class FXMLUserController {
             return;
         }
 
+        String username = usernameField.getText();
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        String role = roleComboBox.getValue();
+
+        if (username.isEmpty() || email.isEmpty()) {
+            showAlert("Erreur", "Veuillez remplir tous les champs !");
+            return;
+        }
+
         Connection conn = DbConnection.getConnection();
         if (conn != null) {
             try {
-                String query = "UPDATE users SET username = ?, email = ? WHERE id = ?";
-                PreparedStatement stmt = conn.prepareStatement(query);
-                stmt.setString(1, usernameField.getText());
-                stmt.setString(2, emailField.getText());
-                stmt.setInt(3, selectedUser.getId());
+                String query;
+                PreparedStatement stmt;
+                if (!password.isEmpty()) {
+                    query = "UPDATE users SET username = ?, email = ?, password = ?, role = ? WHERE id = ?";
+                    stmt = conn.prepareStatement(query);
+                    stmt.setString(1, username);
+                    stmt.setString(2, email);
+                    stmt.setString(3, password);
+                    stmt.setString(4, role);
+                    stmt.setInt(5, selectedUser.getId());
+                } else {
+                    query = "UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?";
+                    stmt = conn.prepareStatement(query);
+                    stmt.setString(1, username);
+                    stmt.setString(2, email);
+                    stmt.setString(3, role);
+                    stmt.setInt(4, selectedUser.getId());
+                }
+
                 stmt.executeUpdate();
 
                 showAlert("Succès", "Utilisateur modifié !");
@@ -151,6 +189,8 @@ public class FXMLUserController {
     private void clearFields() {
         usernameField.clear();
         emailField.clear();
+        passwordField.clear();
+        roleComboBox.setValue("user");
     }
 
     private void showAlert(String title, String message) {
