@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.User;
 import database.DbConnection;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 
@@ -40,8 +41,7 @@ public class FXMLUserController {
                 usernameField.setText(newSelection.getUsername());
                 emailField.setText(newSelection.getEmail());
                 roleComboBox.setValue(newSelection.getRole());
-                // Le mot de passe ne peut pas être récupéré de manière sécurisée ici
-                passwordField.setText("");
+                passwordField.setText(""); // Ne jamais afficher un mot de passe hashé
             }
         });
     }
@@ -56,12 +56,12 @@ public class FXMLUserController {
 
                 while (rs.next()) {
                     userList.add(new User(
-                        rs.getInt("id"),
-                        rs.getString("username"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("created_at"),
-                        rs.getString("role")
+                            rs.getInt("id"),
+                            rs.getString("username"),
+                            rs.getString("email"),
+                            rs.getString("password"),
+                            rs.getString("created_at"),
+                            rs.getString("role")
                     ));
                 }
 
@@ -90,6 +90,8 @@ public class FXMLUserController {
             return;
         }
 
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
         Connection conn = DbConnection.getConnection();
         if (conn != null) {
             try {
@@ -97,7 +99,7 @@ public class FXMLUserController {
                 PreparedStatement stmt = conn.prepareStatement(query);
                 stmt.setString(1, username);
                 stmt.setString(2, email);
-                stmt.setString(3, password);
+                stmt.setString(3, hashedPassword);
                 stmt.setString(4, role);
                 stmt.executeUpdate();
 
@@ -133,12 +135,14 @@ public class FXMLUserController {
             try {
                 String query;
                 PreparedStatement stmt;
+
                 if (!password.isEmpty()) {
+                    String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
                     query = "UPDATE users SET username = ?, email = ?, password = ?, role = ? WHERE id = ?";
                     stmt = conn.prepareStatement(query);
                     stmt.setString(1, username);
                     stmt.setString(2, email);
-                    stmt.setString(3, password);
+                    stmt.setString(3, hashedPassword);
                     stmt.setString(4, role);
                     stmt.setInt(5, selectedUser.getId());
                 } else {
